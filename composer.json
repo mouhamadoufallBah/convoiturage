@@ -1,0 +1,20 @@
+{
+    "name": "convoiturage/convoiturage",
+    "description": "projet de convoiturage en poo avec l'approche mvc",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Convoiturage\\Convoiturage\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "mouhamadoufallbah",
+            "email": "mouhamadoufall.bah@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "twbs/bootstrap": "^5.2"
+    }
+}
