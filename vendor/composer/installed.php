@@ -3,7 +3,7 @@
         'name' => 'convoiturage/convoiturage',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '437eecab67924ac87637599b842ea4451b97d533',
+        'reference' => '1feeb39b85e42bfcdb16a5da3f2745a9ea40005f',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'convoiturage/convoiturage' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '437eecab67924ac87637599b842ea4451b97d533',
+            'reference' => '1feeb39b85e42bfcdb16a5da3f2745a9ea40005f',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

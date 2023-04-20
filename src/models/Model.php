@@ -13,6 +13,7 @@ class Model extends Database
     //Instance de Db
     private $db;
 
+
     protected function requete(string $sql, array $attributs = null)
     {
         // On récupère l'instance de Db
@@ -84,7 +85,7 @@ class Model extends Database
         return $this->requete("SELECT * FROM {$this->table} WHERE id = $id")->fetch();
     }
 
-    public function update(int $id)
+    public function update()
     {
         $champs = [];
         $valeurs = [];
@@ -97,7 +98,7 @@ class Model extends Database
                 $valeurs[] = $valeur;
             }
         }
-        $valeurs[] = $id;
+        $valeurs[] = $this->id;
 
         // On transforme le tableau "champs" en une chaine de caractères
         $liste_champs = implode(', ', $champs);

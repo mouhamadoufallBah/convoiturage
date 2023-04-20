@@ -10,6 +10,30 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js"
     integrity="sha384-Y4oOpwW3duJdCWv5ly8SCFYWqFDsfob/3GkgExXKV4idmbt98QcxXYs9UoXAB7BZ" crossorigin="anonymous">
 </script>
+<script>
+  function submitForm(event) {
+    event.preventDefault(); // Empêche le comportement par défaut de soumission du formulaire
+    const form = event.target;
+    const formData = new FormData(form);
+    fetch(form.action, {
+        method: form.method,
+        body: formData
+      })
+      .then(response => response.text())
+      .then(html => {
+        const resultContainer = document.getElementById('result');
+        resultContainer.innerHTML = html;
+      });
+  }
+
+
+  function calculePrix() {
+  const nombre = document.getElementById('nombre').value;
+  const prix_place = <?= $voyage->prix_place ?>;
+  const prix_total = nombre * prix_place;
+  document.getElementById('prix').innerHTML = 'Prix totale : ' + prix_total + ' FCFA';
+}
+</script>
 
 </body>
 </html>

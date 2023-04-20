@@ -8,7 +8,7 @@
             <h1 class="display-4">Partez à l'aventure</h1>
             <p class="lead">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus
                 tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.</p>
-            <a href="/main/search" class="btn btn-primary">Rechercher un trajet</a>
+            <a href="/main/search " class="btn btn-primary">Rechercher un trajet</a>
         </div>
     </div>
 </div>
@@ -38,7 +38,7 @@
                             tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.</p>
                     </li>
                 </ul>
-                <a href="/main/search" class="btn btn-primary">Rechercher un trajet</a>
+                <a href="/main/search " class="btn btn-primary">Rechercher un trajet</a>
             </div>
             <div class="col-md-6 order-md-2">
                 <img src="https://via.placeholder.com/500x300.png?text=Image" alt="Image" class="img-fluid">
@@ -57,7 +57,7 @@
             <h2>Trouvez un covoiturage facilement</h2>
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor,
                 dignissim sit amet, adipiscing nec, ultricies sed, dolor.</p>
-            <a href="/main/search" class="btn btn-primary">Rechercher un trajet</a>
+            <a href="/main/search " class="btn btn-primary">Rechercher un trajet</a>
         </div>
     </div>
 </div>

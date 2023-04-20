@@ -3,6 +3,7 @@ namespace Convoiturage\Convoiturage\Core;
 
 use Convoiturage\Convoiturage\Controllers\ErrorController;
 use Convoiturage\Convoiturage\Controllers\MainController;
+use Convoiturage\Convoiturage\Models\ReservationModel;
 
 
 class Router
@@ -18,6 +19,13 @@ class Router
     public function start()
     {
         session_start();
+
+        //recuperer le nombre reservation
+        $rModel = new ReservationModel();
+        $r = $rModel->findDemandeReservationByChauffeur(1);
+        $toArray = get_object_vars($r);
+        $toString = (string) $toArray['COUNT(*)'];
+        $_SESSION['nbreReservation'] = $toString;
         
         //recperer l'url
         $uri = $_SERVER['REQUEST_URI'];
