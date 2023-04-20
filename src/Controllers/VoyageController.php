@@ -145,7 +145,7 @@ class VoyageController extends Controller
         $this->render('voyage/trajet', compact('voyage', 'reservation'));
     }
 
-//___________________________________________a enlever
+//___________________________________________a enlever apres
     public function all()
     {
 
