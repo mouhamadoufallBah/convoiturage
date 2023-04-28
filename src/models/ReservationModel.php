@@ -8,7 +8,7 @@ class ReservationModel extends Model
     protected int $id_voyage;
     protected int $id_passager;
     protected string $etat;
-
+    protected int $placeReserver;
 
     public function __construct()
     {
@@ -19,26 +19,28 @@ class ReservationModel extends Model
 
     public function findReservationByPassagere($id_passager)
     {
-        return $this->requete("SELECT r.id, r.id_passager, r.id_voyage, u1.nomComplet AS passager, u2.nomComplet AS chauffeur, v.lieu_depart, v.lieu_arrive, v.date_depart,
+        return $this->requete(
+            "SELECT r.*, u1.nomComplet AS passager, u2.nomComplet AS chauffeur, v.lieu_depart, v.lieu_arrive, v.date_depart,
                                 v.heure_depart, v.prix_place
                                 FROM $this->table as r
                                 INNER JOIN users AS u1 ON r.id_passager = u1.id 
                                 INNER JOIN voyage AS v ON r.id_voyage = v.id 
                                 INNER JOIN users AS u2 ON v.id_chauffeur = u2.id
-                                WHERE r.id_passager = (?)", [$id_passager]
-                                
-                            )->fetchAll();
+                                WHERE r.id_passager = (?)",
+            [$id_passager]
+
+        )->fetchAll();
     }
 
     public function findDemandeReservationByChauffeur($id_chauffeur)
     {
-        return $this->requete("SELECT COUNT(*) FROM $this->table AS r
+        return $this->requete(
+            "SELECT COUNT(*) FROM $this->table AS r
                         INNER JOIN voyage AS v ON r.id_voyage = v.id
-                        WHERE r.etat = 'En attente' AND v.id_chauffeur = ?", [$id_chauffeur],
-                         )->fetch();
+                        WHERE r.etat = 'En attente' AND v.id_chauffeur = ?",
+            [$id_chauffeur],
+        )->fetch();
     }
-
-    //SELECT * FROM `reservation`,`voyage` WHERE reservation.id_voyage = voyage.id AND voyage.id_chauffeur = 1 AND reservation.etat = 'En attente'
 
     /**
      * Get the value of id_passager
@@ -118,6 +120,26 @@ class ReservationModel extends Model
     public function setEtat($etat)
     {
         $this->etat = $etat;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of placeReserver
+     */
+    public function getPlaceReserver()
+    {
+        return $this->placeReserver;
+    }
+
+    /**
+     * Set the value of placeReserver
+     *
+     * @return  self
+     */
+    public function setPlaceReserver($placeReserver)
+    {
+        $this->placeReserver = $placeReserver;
 
         return $this;
     }

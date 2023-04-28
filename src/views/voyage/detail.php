@@ -16,29 +16,23 @@ $date = $timestamp->format('l j F');
                 </div>
                 <hr>
                 <div>
-                    <h5 class="">Combien de place souhaiter vous reserver</h5>
-                    <form class="row g-3" onsubmit="submitForm(event)">
-                        <div class="col-auto">
-                            <input class="form-control" type="number" name="nombre" id="nombre" min="1" max="4" value="<?= $nombre ?>" onchange="calculePrix()">
-                        </div>
-                    </form>
-                    <p id="prix">Prix totale : 0 FCFA</p>
-                </div>
-                <hr>
-                <div>
                     <h5><?= $voyage->nomComplet ?></h5>
                 </div>
                 <hr>
-                
-                    <form action="" method="post">
-                    <div class="d-grid gap-2 col-4 mx-auto text-center">
-                        <input type="hidden" name="id_voyage" value="<?= $voyage->id ?>">
-                        <input type="hidden" name="id_passager" value="<?= $_SESSION['user']['id'] ?>">
-                        <input class="btn btn-primary" type="submit" value="reserver">
+                <div>
+                    <h5 class="">Combien de place souhaiter vous reserver</h5>
+                    <form action="" method="post" class="row g-3">
+                        <div class="">
+                            <input class="form-control" type="number" name="nombrePlace" id="nombrePlace" min="1" max="4" value="<?= $nombre ?>" onchange="calculePrix()">
+                            <p id="prix">Prix totale : 0 FCFA</p>
+                        </div>
+                        <div class="d-grid gap-2 col-4 mx-auto text-center">
+                            <input type="hidden" name="id_voyage" value="<?= $voyage->id ?>">
+                            <input type="hidden" name="id_passager" value="<?= $_SESSION['user']['id'] ?>">
+                            <input class="btn btn-primary" type="submit" value="reserver">
                         </div>
                     </form>
-                
-
+                </div>
             </div>
         </div>
     </div>

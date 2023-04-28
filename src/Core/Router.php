@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 namespace Convoiturage\Convoiturage\Core;
 
 use Convoiturage\Convoiturage\Controllers\ErrorController;
@@ -10,71 +11,61 @@ class Router
 {
     private ErrorController $error;
 
-    public function  __construct(){
+    public function  __construct()
+    {
         $this->error = new ErrorController();
-
     }
 
-    
     public function start()
     {
         session_start();
 
-        //recuperer le nombre reservation
-        $rModel = new ReservationModel();
-        $r = $rModel->findDemandeReservationByChauffeur(1);
-        $toArray = get_object_vars($r);
-        $toString = (string) $toArray['COUNT(*)'];
-        $_SESSION['nbreReservation'] = $toString;
-        
+        if (isset($_SESSION['user'])) :
+            //recuperer le nombre reservation
+            $rModel = new ReservationModel();
+            $r = $rModel->findDemandeReservationByChauffeur($_SESSION['user']['id']);
+            $toArray = get_object_vars($r);
+            $toString = (string) $toArray['COUNT(*)'];
+            $_SESSION['nbreReservation'] = $toString;
+        endif;
+
         //recperer l'url
         $uri = $_SERVER['REQUEST_URI'];
 
         //on verifie si l'url ecrite se termine par un slash et si oui on l'enleve
-        if(!empty($uri) && $uri != '/' && $uri[-1] ==="/")
-        {
+        if (!empty($uri) && $uri != '/' && $uri[-1] === "/") {
             $uri = substr($uri, 0, -1);
-            
+
             //on envoie un code de redirection permanent
             http_response_code(301);
 
             //on redirige vers le lien demandé
-            header('Location: '.$uri);            
+            header('Location: ' . $uri);
         }
 
         //Recuper le $_GET['p] pour ensuite le scinder puis la 1ers elmt sera le controller, 2em methode, le reste les paramatre
-        $params = explode('/', $_GET['p']);        
+        $params = explode('/', $_GET['p']);
 
-        if($params[0] !== ''){
+        if ($params[0] !== '') {
 
-            $controller = '\\Convoiturage\\Convoiturage\\Controllers\\'.ucfirst(array_shift($params)).'Controller';
+            $controller = '\\Convoiturage\\Convoiturage\\Controllers\\' . ucfirst(array_shift($params)) . 'Controller';
 
-            if(class_exists($controller)){
+            if (class_exists($controller)) {
                 $controller = new $controller();
 
                 $methode = (isset($params[0])) ? array_shift($params) : 'index';
 
-                if(method_exists($controller, $methode))
-                {
+                if (method_exists($controller, $methode)) {
                     (isset($params[0])) ? call_user_func_array([$controller, $methode], $params) : $controller->$methode();
-                }else{
+                } else {
                     $this->error->pageNotFound();
                 }
-                
-            }else{
+            } else {
                 $this->error->pageNotFound();
             }
-
-            
-
-            
-
-        }else{
+        } else {
             $controller = new MainController();
             $controller->index();
         }
-        
-       
-
     }
 }

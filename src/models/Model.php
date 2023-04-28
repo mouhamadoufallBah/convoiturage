@@ -4,15 +4,12 @@ namespace Convoiturage\Convoiturage\Models;
 
 use Convoiturage\Convoiturage\Core\Database;
 
-
 class Model extends Database
 {
     //table de la base de donnée
     protected $table;
-
     //Instance de Db
     private $db;
-
 
     protected function requete(string $sql, array $attributs = null)
     {

@@ -34,16 +34,21 @@ class VoyageController extends Controller
 
 
         if (isset($_SESSION['user']) && !empty($_SESSION['user']['id'])) {
-            if (FormBuilder::validate($_POST, ['id_voyage', 'id_passager'])) {
+            if (FormBuilder::validate($_POST, ['id_voyage', 'id_passager', 'nombrePlace'])) {
 
                 $id_voyage = strip_tags($_POST['id_voyage']);
                 $id_passager = strip_tags($_POST['id_passager']);
+                $nombrePlace = strip_tags($_POST['nombrePlace']);
                 $user = $_SESSION['user']['id'];
 
                 $reservation = new ReservationModel();
                 $reservation->setId_passager($id_passager)
-                    ->setId_voyage($id_voyage);
+                    ->setId_voyage($id_voyage)
+                    ->setPlaceReserver($nombrePlace);
+
                 $reservation->create();
+
+
 
                 $_SESSION['success'] = "Votre demande de reservation a été envoyée avec succées";
                 header('Location: /main');
@@ -52,7 +57,7 @@ class VoyageController extends Controller
                 $this->render('voyage/detail', compact('voyage'));
             }
         } else {
-            $_SESSION['erreur'] = "Vous devez vous connecter pour pouvoir publier un trajet";
+            $_SESSION['erreur'] = "Vous devez vous connecter pour reserver une voyage";
             header('Location: /security/login');
             exit;
         }
@@ -116,36 +121,73 @@ class VoyageController extends Controller
         }
     }
 
-    public function mesPublications(int $id)
+    public function mesPublications($id)
     {
-
         $voyageModel = new VoyageModel();
-        $voyage = $voyageModel->findVoyageByChauffeur($id);
+        $voyage = $voyageModel->findPublication($id);
 
         $reservationModel = new reservationModel();
-
         $reservation = $reservationModel->findReservationByPassagere($_SESSION['user']['id']);
 
-        if(FormBuilder::validate($_POST, ['id_Reservation', 'etat'])){
+
+        if (FormBuilder::validate($_POST, ['id_Reservation', 'etat'])) {
             $id_Reservation = strip_tags($_POST['id_Reservation']);
             $etat = strip_tags($_POST['etat']);
 
             $updateReservation = new ReservationModel();
+            $updateVoyage = new VoyageModel();
 
-            $updateReservation->setId($id_Reservation)
-                            ->setEtat($etat);
+            if ($etat == "En attente") {
+                //recuperer le nombre de place reserver
+                $currentReservation = $updateReservation->findById($id_Reservation);
+                $placeReserver =  $currentReservation->placeReserver;
+                //recuperer le nombre de place dispo
+                $voyageId = $currentReservation->id_voyage;
+                $currentVoyage = $updateVoyage->findById($voyageId);
+                $placeDispo = $currentVoyage->nombre_place;
+                //caluler le nombre de place restante
+                $placeRestante = $placeDispo - $placeReserver;
 
-            $updateReservation->update();
+                //Changer l'etat de la reservation
+                $updateReservation->setId($id_Reservation)
+                    ->setEtat("Valider");
+                $updateReservation->update();
 
-            header('Location: /main');
+                //update nombre de place dispo dans le table voyage            
+                $updateVoyage->setId($voyageId)
+                    ->setNombre_place($placeRestante);
+                $updateVoyage->update();
+            } else {
+                //recuperer le nombre de place reserver
+                $currentReservation = $updateReservation->findById($id_Reservation);
+                $placeReserver =  $currentReservation->placeReserver;
+                //recuperer le nombre de place dispo
+                $voyageId = $currentReservation->id_voyage;
+                $currentVoyage = $updateVoyage->findById($voyageId);
+                $placeDispo = $currentVoyage->nombre_place;
+                //caluler le nombre de place restante
+                $placeRestante = $placeDispo + $placeReserver;
+
+                //Changer l'etat de la reservation
+                $updateReservation->setId($id_Reservation)
+                    ->setEtat("En attente");
+                $updateReservation->update();
+
+                //update nombre de place dispo dans le table voyage            
+                $updateVoyage->setId($voyageId)
+                    ->setNombre_place($placeRestante);
+                $updateVoyage->update();
+            }
+
+            header('Location: /voyage/mesPublications/' . $_SESSION['user']['id']);
         }
-        
 
 
-        $this->render('voyage/trajet', compact('voyage', 'reservation'));
+
+        $this->render('voyage/mesPublications', compact('voyage', 'reservation'));
     }
 
-//___________________________________________a enlever apres
+    //___________________________________________a enlever apres
     public function all()
     {
 

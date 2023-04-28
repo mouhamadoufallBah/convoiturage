@@ -20,10 +20,10 @@ class VoyageModel extends Model
         $this->table = strtolower(str_replace('Model', '', $class));
     }
 
-    public function findVoyageByChauffeur($id_chauffeur)
+    public function findPublication($id_chauffeur)
     {
         return $this->requete("SELECT v.*, r.etat, r.id AS idReservation FROM $this->table AS v
-                                JOIN reservation AS r ON v.id = r.id_voyage
+                                LEFT JOIN reservation AS r ON v.id = r.id_voyage
                                 WHERE id_chauffeur = ?", [$id_chauffeur])->fetchAll();
     }
 
@@ -31,7 +31,7 @@ class VoyageModel extends Model
     {
         return $this->requete("SELECT v.id, v.lieu_depart, v.lieu_arrive, v.heure_depart, v.date_depart, v.prix_place, u.nomComplet FROM $this->table AS v
                                 JOIN users AS u ON v.id_chauffeur = u.id
-                                WHERE lieu_depart=? AND lieu_arrive=? AND date_depart=? AND heure_depart=?", [$lieu_depart, $lieu_arrive, $date_depart, $heure_depart])->fetchAll();
+                                WHERE nombre_place>0 AND lieu_depart=? AND lieu_arrive=? AND date_depart=? AND heure_depart=?", [$lieu_depart, $lieu_arrive, $date_depart, $heure_depart])->fetchAll();
     }
 
     public function findVoyageByIdForDetail($id)
@@ -40,9 +40,7 @@ class VoyageModel extends Model
         JOIN users AS u ON v.id_chauffeur = u.id
         WHERE v.id=?", [$id])->fetch();
     }
-
-
-
+    
     /**
      * Get the value of lieu_depart
      */
@@ -179,6 +177,26 @@ class VoyageModel extends Model
     public function setId_chauffeur($id_chauffeur)
     {
         $this->id_chauffeur = $id_chauffeur;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of id
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set the value of id
+     *
+     * @return  self
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
 
         return $this;
     }

@@ -28,7 +28,7 @@
 
 
   function calculePrix() {
-  const nombre = document.getElementById('nombre').value;
+  const nombre = document.getElementById('nombrePlace').value;
   const prix_place = <?= $voyage->prix_place ?>;
   const prix_total = nombre * prix_place;
   document.getElementById('prix').innerHTML = 'Prix totale : ' + prix_total + ' FCFA';
