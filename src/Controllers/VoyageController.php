@@ -68,7 +68,7 @@ class VoyageController extends Controller
 
         if (isset($_SESSION['user']) && !empty($_SESSION['user']['id'])) {
 
-            if (FormBuilder::validate($_POST, ['lieu_depart', 'lieu_arrive', 'date_depart', 'heure_depart', 'nbre_place', 'prix_place'])) {
+            if (FormBuilder::validate($_POST, ['lieu_depart', 'lieu_arrive', 'date_depart', 'heure_depart', 'nbre_place', 'prix_place', 'description'])) {
 
                 $lieu_depart = strip_tags($_POST['lieu_depart']);
                 $lieu_arrive = strip_tags($_POST['lieu_arrive']);
@@ -76,6 +76,7 @@ class VoyageController extends Controller
                 $heure_depart = strip_tags($_POST['heure_depart']);
                 $nbre_place = strip_tags($_POST['nbre_place']);
                 $prix_place = strip_tags($_POST['prix_place']);
+                $description = strip_tags($_POST['description']);
                 $user = $_SESSION['user']['id'];
 
                 $voyage = new VoyageModel();
@@ -86,12 +87,14 @@ class VoyageController extends Controller
                     ->setHeure_depart($heure_depart)
                     ->setNombre_place($nbre_place)
                     ->setPrix_place($prix_place)
+                    ->setDescription($description)
                     ->setId_chauffeur($user);
+
 
                 $voyage->create();
 
                 $_SESSION['success'] = "Votre trajet a été publier avec succées";
-                header('Location: /main');
+                header('Location: /voyage/mesPublications/' . $_SESSION['user']['id']);
                 exit;
             }
 
@@ -110,10 +113,12 @@ class VoyageController extends Controller
                 ->setInput('number', 'nbre_place', 'pattern="^[1-4]+$" min="1" max="4"', 'title="Veuillez entrer le nombre de place"', ['id' => 'nbre_place', 'placeholder' => 'Veuillez entrer le nombre de place', 'class' => 'form-control'])
                 ->setLabelFor('prix_place', 'Prix par place')
                 ->setInput('text', 'prix_place', 'pattern="[0-9]+"', 'title="Veuillez saisir que des chiffre"', ['id' => 'prix_place', 'class' => 'form-control'])
+                ->setLabelFor('description', 'description')
+                ->setTextArrea('description', '', ['id' => 'description', 'class' => 'form-control'])
                 ->setButton('Publier', ['class' => 'btn btn-primary mt-3'])
                 ->formEnd();
 
-            $this->render('voyage/add', ['addForm' => $form->create()], 'default');
+            $this->render('voyage/add', ['addForm' => $form->create()]);
         } else {
             $_SESSION['erreur'] = "Vous devez vous connecter pour pouvoir publier un trajet";
             header('Location: /security/login');
@@ -185,6 +190,95 @@ class VoyageController extends Controller
 
 
         $this->render('voyage/mesPublications', compact('voyage', 'reservation'));
+    }
+
+    public function modifier($id)
+    {
+
+        if (isset($_SESSION['user']) && !empty($_SESSION['user']['id'])) {
+
+            $voyageModel = new VoyageModel();
+            $voyage = $voyageModel->findById($id);
+
+            if (!$voyage) {
+                http_response_code('404');
+                $_SESSION['erreur'] = "Il n'y a pas de publication qui corresponde à cette id";
+                header('Location: /voyage/mesPublications/' . $_SESSION['user']['id']);
+                exit;
+            }
+
+            if ($voyage->id_chauffeur !== $_SESSION['user']['id']) {
+                $_SESSION['erreur'] = "Vous n'avez pas accées à cette page";
+                header('Location: /voyage/mesPublications/' . $_SESSION['user']['id']);
+                exit;
+            }
+
+            if (FormBuilder::validate($_POST, ['lieu_depart', 'lieu_arrive', 'date_depart', 'heure_depart', 'nbre_place', 'prix_place', 'description'])) {
+
+                $lieu_depart = strip_tags($_POST['lieu_depart']);
+                $lieu_arrive = strip_tags($_POST['lieu_arrive']);
+                $date_depart = strip_tags($_POST['date_depart']);
+                $heure_depart = strip_tags($_POST['heure_depart']);
+                $nbre_place = strip_tags($_POST['nbre_place']);
+                $prix_place = strip_tags($_POST['prix_place']);
+                $description = strip_tags($_POST['description']);
+
+
+                $updateVoyage = new VoyageModel();
+
+                $updateVoyage->setId($voyage->id)
+                    ->setLieu_depart($lieu_depart)
+                    ->setLieu_arrive($lieu_arrive)
+                    ->setDate_depart($date_depart)
+                    ->setHeure_depart($heure_depart)
+                    ->setNombre_place($nbre_place)
+                    ->setPrix_place($prix_place)
+                    ->setDescription($description);
+                $updateVoyage->update();
+
+                $_SESSION['success'] = "Trajet modifier avec succée";
+                header('Location: /voyage/mesPublications/' . $_SESSION['user']['id']);
+            }
+
+
+            $form = new FormBuilder();
+
+            $form->formStart()
+                ->setLabelFor('lieu_depart', 'Lieu de depart')
+                ->setInput('text', 'lieu_depart', 'pattern="[a-zA-Z0-9]+"', 'title="Veuillez saisir le lieu de depart"value="' . $voyage->lieu_depart . '"', ['id' => 'lieu_depart', 'placeholder' => 'Veuillez entrer le lieu de depart', 'class' => 'form-control'])
+                ->setLabelFor('lieu_arrive', 'Lieu d\'arrivée')
+                ->setInput('text', 'lieu_arrive', 'pattern="[a-zA-Z0-9]+"', 'title="Veuillez saisir le lieu d\'arrivée"value="' . $voyage->lieu_arrive . '"', ['id' => 'lieu_arrive', 'placeholder' => 'Veuillez entrer le lieu d\'arrivée', 'class' => 'form-control'])
+                ->setLabelFor('date_depart', 'Date de depart')
+                ->setInput('date', 'date_depart', 'pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}"', 'title="Veuillez saisir la date de départ"value="' . $voyage->date_depart . '"', ['id' => 'date_depart', 'placeholder' => 'Veuillez entrer la date de départ', 'class' => 'form-control'])
+                ->setLabelFor('heure_depart', 'Heure de depart')
+                ->setInput('time', 'heure_depart', 'pattern="[0-9]{2}:[0-9]{2}"', 'title="Veuillez saisir l\'heure de départ."value="' . $voyage->heure_depart . '"', ['id' => 'heure_depart', 'placeholder' => 'Veuillez entrer votre numero de telephone', 'class' => 'form-control'])
+                ->setLabelFor('nbre_place', 'Nombre de places')
+                ->setInput('number', 'nbre_place', 'pattern="^[1-4]+$" min="1" max="4"', 'title="Veuillez entrer le nombre de place"value="' . $voyage->nombre_place . '"', ['id' => 'nbre_place', 'placeholder' => 'Veuillez entrer le nombre de place', 'class' => 'form-control'])
+                ->setLabelFor('prix_place', 'Prix par place')
+                ->setInput('text', 'prix_place', 'pattern="[0-9]+"', 'title="Veuillez saisir que des chiffre" value="' . $voyage->prix_place . '"', ['id' => 'prix_place', 'class' => 'form-control'])
+                ->setLabelFor('description', 'description')
+                ->setTextArrea('description', $voyage->description, ['id' => 'description', 'class' => 'form-control'])
+                ->setButton('Modifier', ['class' => 'btn btn-primary mt-3'])
+                ->formEnd();
+
+
+            return $this->render('voyage/modifier', ['updateForm' => $form->create()]);
+        } else {
+            $_SESSION['erreur'] = "Vous devez vous connecter pour pouvoir publier un trajet";
+            header('Location: /voyage/mesPublications/' . $_SESSION['user']['id']);
+            exit;
+        }
+    }
+
+
+    public function suprimer($id)
+    {
+        $voyageModel = new VoyageModel();
+
+        $deleteVoyage = $voyageModel->delete($id);
+
+        $_SESSION['erreur'] = "Trajet supprimer avec succée";
+        header('Location: /voyage/mesPublications/' . $_SESSION['user']['id']);
     }
 
     //___________________________________________a enlever apres

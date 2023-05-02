@@ -12,6 +12,7 @@ class VoyageModel extends Model
     protected $nombre_place;
     protected $prix_place;
     protected $id_chauffeur;
+    protected $description;
 
 
     public function __construct()
@@ -22,8 +23,9 @@ class VoyageModel extends Model
 
     public function findPublication($id_chauffeur)
     {
-        return $this->requete("SELECT v.*, r.etat, r.id AS idReservation FROM $this->table AS v
+        return $this->requete("SELECT v.*, r.etat, r.id AS idReservation, r.id_passager AS passager, r.date_heure_reservation AS dateReservation, r.placeReserver ,u.nomComplet FROM $this->table AS v
                                 LEFT JOIN reservation AS r ON v.id = r.id_voyage
+                                LEFT JOIN users AS u ON r.id_passager = u.id
                                 WHERE id_chauffeur = ?", [$id_chauffeur])->fetchAll();
     }
 
@@ -40,7 +42,7 @@ class VoyageModel extends Model
         JOIN users AS u ON v.id_chauffeur = u.id
         WHERE v.id=?", [$id])->fetch();
     }
-    
+
     /**
      * Get the value of lieu_depart
      */
@@ -197,6 +199,26 @@ class VoyageModel extends Model
     public function setId($id)
     {
         $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of description
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set the value of description
+     *
+     * @return  self
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
 
         return $this;
     }
