@@ -116,7 +116,7 @@
                 <?php
                 $voyageByReservation = [];
                 foreach ($reservation as $r) {
-                    $id_voyageR = $r->id_voyage;
+                    $id_voyageR = $r->id;
                     if (!isset($voyageByReservation[$id_voyageR])) {
                         $voyageByReservation[$id_voyageR] = [];
                     }
@@ -134,7 +134,7 @@
                                 </h6>
                             </div>
                             <div class="d-flex me-2">
-                                <a href="#" class="btn btn-outline-danger btn-sm">Annuler</a>
+                                <a href="/voyage/annuler/<?= $reservations[0]->id  ?>" class="btn btn-outline-danger btn-sm">Annuler</a>
                             </div>
                         </div>
                         <div id="collapse<?= $id_voyageR ?>" class="accordion-collapse collapse" data-bs-parent="#accordionExample">

@@ -275,11 +275,23 @@ class VoyageController extends Controller
     {
         $voyageModel = new VoyageModel();
 
-        $deleteVoyage = $voyageModel->delete($id);
+        $voyageModel->delete($id);
 
-        $_SESSION['erreur'] = "Trajet supprimer avec succée";
+        $_SESSION['success'] = "Trajet supprimer avec succée";
         header('Location: /voyage/mesPublications/' . $_SESSION['user']['id']);
     }
+
+    public function annuler($id)
+    {
+        $reservationModel = new ReservationModel();
+
+        $reservationModel->delete($id);
+
+        $_SESSION['success'] = "Reservation annulée avec succée";
+        header('Location: /voyage/mesPublications/' . $_SESSION['user']['id']);
+    }
+
+    
 
     //___________________________________________a enlever apres
     public function all()

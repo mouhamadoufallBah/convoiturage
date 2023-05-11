@@ -29,7 +29,7 @@
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
             <li><a class="dropdown-item" href="/voyage/add">Publier une annonce</a></li>
             <li><a class="dropdown-item" href="/voyage/mesPublications/<?= $_SESSION['user']['id'] ?>">Mes trajets<span class="badge bg-warning"> <?= $_SESSION['nbreReservation'] ?></span></a></li>
-            <li><a class="dropdown-item" href="/security/profil">Profil</a></li>
+            <li><a class="dropdown-item" href="/security/profile">Profil</a></li>
             <li>
               <hr class="dropdown-divider">
             </li>
